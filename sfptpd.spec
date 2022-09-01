@@ -1,6 +1,8 @@
 #
 # Spec file for building sfptpd source rpm
 #
+# SPDX-License-Identifier: BSD-3-Clause
+#
 # (c) Copyright 2012-2022 Xilinx, Inc.
 #
 Name: sfptpd
@@ -27,7 +29,7 @@ Ethernet Controllers.
 make %{?_smp_mflags} sfptpd sfptpdctl
 
 %install
-%make_install CC='false # no compilation at installation stage #'
+%make_install RPM_MAN_DIR=%{_mandir} CC='false # no compilation at installation stage #'
 
 %files
 %attr(755, root, root) %{_sbindir}/sfptpd
@@ -37,3 +39,4 @@ make %{?_smp_mflags} sfptpd sfptpdctl
 %license LICENSE PTPD2_COPYRIGHT NTP_COPYRIGHT.html
 %doc %{_pkgdocdir}/examples
 %doc %{_pkgdocdir}/config
+%{_mandir}/man8/*.8*
