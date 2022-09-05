@@ -27,6 +27,8 @@ Ethernet Controllers.
 %prep
 %setup -q
 
+find -iregex '.*\.py' | xargs sed -i -r '1s,^(#!.*)python3,\1python2,'
+
 %build
 make %{?_smp_mflags} sfptpd sfptpdctl
 
