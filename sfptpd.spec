@@ -41,10 +41,11 @@ INST_CONFDIR=$RPM_BUILD_ROOT%{_sysconfdir}
 INST_PKGDOCDIR=$RPM_BUILD_ROOT%{pkgdocdir}
 INST_PKGLICENSEDIR=$INST_PKGDOCDIR
 INST_OMIT=
+INST_INITS=sysv
 
 export PACKAGE_NAME CC
 export INST_SBINDIR INST_DOCDIR INST_MANDIR INST_CONFDIR INST_PKGDOCDIR INST_PKGLICENSEDIR
-export INST_OMIT
+export INST_OMIT INST_INITS
 
 rm -rf $RPM_BUILD_ROOT
 %make_install
@@ -53,7 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root, -)
 %attr(755, root, root) %{_sbindir}/sfptpd
 %attr(755, root, root) %{_sbindir}/sfptpdctl
-%attr(644, root, root) %{_unitdir}/sfptpd.service
+%attr(755, root, root) %{_sysconfdir}/init.d/sfptpd
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sfptpd.conf
 %doc %{pkgdocdir}/LICENSE
 %doc %{pkgdocdir}/PTPD2_COPYRIGHT
