@@ -30,22 +30,18 @@ sed -i 's,^\(#define SFPTPD_VERSION_TEXT *"\).*",\1%{version}",g' src/include/sf
 %install
 export CC='false # no compilation at installation stage #'
 export PACKAGE_NAME=%{name}
-export INST_SBINDIR=$RPM_BUILD_ROOT%{_sbindir}
-export INST_DOCDIR=$RPM_BUILD_ROOT%{_docdir}
-export INST_MANDIR=$RPM_BUILD_ROOT%{_mandir}
-export INST_CONFDIR=$RPM_BUILD_ROOT%{_sysconfdir}
-export INST_UNITDIR=$RPM_BUILD_ROOT%{_unitdir}
-export INST_PKGDOCDIR=$RPM_BUILD_ROOT%{_pkgdocdir}
+export INST_SBINDIR=%{buildroot}%{_sbindir}
+export INST_DOCDIR=%{buildroot}%{_docdir}
+export INST_MANDIR=%{buildroot}%{_mandir}
+export INST_CONFDIR=%{buildroot}%{_sysconfdir}
+export INST_UNITDIR=%{buildroot}%{_unitdir}
+export INST_PKGDOCDIR=%{buildroot}%{_pkgdocdir}
 export INST_OMIT="license"
 export INST_INITS="systemd"
 %make_install
 
 %check
-build/sfptpd_test bic
-build/sfptpd_test filters
-build/sfptpd_test hash
-build/sfptpd_test stats
-build/sfptpd_test config
+make fast_test
 
 %post
 %systemd_post %{name}.service
@@ -61,11 +57,15 @@ build/sfptpd_test config
 %attr(755, root, root) %{_sbindir}/sfptpdctl
 %attr(644, root, root) %{_unitdir}/sfptpd.service
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sfptpd.conf
+%attr(644, root, root) %config(noreplace) %{_sysconfdir}/sysconfig/sfptpd
 %license LICENSE PTPD2_COPYRIGHT NTP_COPYRIGHT.html
 %doc %{_pkgdocdir}
 %{_mandir}/man8/*.8*
 
 %changelog
+* Wed Nov  9 2022 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1009~1.1
+- use buildroot macro, fast_test target and sysconfig options
+
 * Wed Oct 26 2022 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1008-1
 - release candidate
 
