@@ -63,7 +63,7 @@ make fast_test
 %{_mandir}/man8/*.8*
 
 %changelog
-* Wed Nov  9 2022 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1009~1.1
+* Wed Nov  9 2022 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1009~1-1
 - use buildroot macro, fast_test target and sysconfig options
 
 * Wed Oct 26 2022 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1008-1
