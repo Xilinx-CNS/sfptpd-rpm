@@ -3,7 +3,7 @@
 
 Name: sfptpd
 Version: %{pkgversion}
-Release: 1
+Release: 1%{?dist}
 Summary: Solarflare Enhanced PTP Daemon
 License: BSD
 Group: System Environment/Daemons
@@ -22,7 +22,7 @@ The application manages multiple time sources and bonded interfaces.
 
 %prep
 %autosetup
-sed -i 's,^\(#define SFPTPD_VERSION_TEXT *"\).*",\1%{version}",g' src/include/sfptpd_version.h
+scripts/sfptpd_versioning write %{version}
 
 %build
 %make_build
@@ -63,6 +63,9 @@ make fast_test
 %{_mandir}/man8/*.8*
 
 %changelog
+* Tue Jan  3 2023 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1015-1
+- use versioning script to encode version
+
 * Wed Nov  9 2022 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1009~1-1
 - use buildroot macro, fast_test target and sysconfig options
 
