@@ -3,7 +3,7 @@
 
 Name: sfptpd
 Version: %{pkgversion}
-Release: 1%{?dist}
+Release: 1
 Summary: Solarflare Enhanced PTP Daemon
 License: BSD
 Group: System Environment/Daemons
