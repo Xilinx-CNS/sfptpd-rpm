@@ -24,7 +24,7 @@ The application manages multiple time sources and bonded interfaces.
 
 %prep
 %autosetup
-sed -i 's,^\(#define SFPTPD_VERSION_TEXT *"\).*",\1%{version}",g' src/include/sfptpd_version.h
+scripts/sfptpd_versioning write %{version}
 
 find -iregex '.*\.py' | xargs sed -i -r '1s,^(#!.*)python3,\1python2,'
 
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Jan  3 2023 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1015-1
+- use versioning script to encode version
+
 * Wed Nov  9 2022 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1009~1-1
 - use buildroot macro, fast_test target and sysconfig options
 
