@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# (c) Copyright 2014,2022 Advanced Micro Devices, Inc.
+# (c) Copyright 2014-2023 Advanced Micro Devices, Inc.
 
 Name: sfptpd
 Version: %{pkgversion}
@@ -8,11 +8,15 @@ Summary: Solarflare Enhanced PTP Daemon
 License: BSD
 Group: System Environment/Daemons
 Source0: sfptpd-%{version}.tgz
+Source1: sfptpd.sysusers
 URL: https://www.xilinx.com/download/drivers
 Vendor: Advanced Micro Devices, Inc.
 BuildRequires: gcc
 BuildRequires: make
 BuildRequires: systemd-rpm-macros
+BuildRequires: libmnl-devel
+BuildRequires: libcap-devel
+%{?sysusers_requires_compat}
 
 %description
 This package provides the Xilinx 'sfptpd' daemon which implements PTP
@@ -23,6 +27,7 @@ The application manages multiple time sources and bonded interfaces.
 %prep
 %autosetup
 scripts/sfptpd_versioning write %{version}
+sed -i 's,.*\(SFPTPD_USER=\).*",#\1"-u sfptpd",g' scripts/sfptpd.env
 
 %build
 %make_build
@@ -39,9 +44,14 @@ export INST_PKGDOCDIR=%{buildroot}%{_pkgdocdir}
 export INST_OMIT="license"
 export INST_INITS="systemd"
 %make_install
+install -m 644 -p -D %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
+install -m 644 -p -D scripts/udev/55-sfptpd.rules %{buildroot}%{_udevrulesdir}/55-sfptpd.rules
 
 %check
 make fast_test
+
+%pre
+%sysusers_create_compat %{SOURCE1}
 
 %post
 %systemd_post %{name}.service
@@ -58,11 +68,18 @@ make fast_test
 %attr(644, root, root) %{_unitdir}/sfptpd.service
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sfptpd.conf
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sysconfig/sfptpd
+%{_sysusersdir}/%{name}.conf
+%{_udevrulesdir}/55-sfptpd.rules
 %license LICENSE PTPD2_COPYRIGHT NTP_COPYRIGHT.html
 %doc %{_pkgdocdir}
 %{_mandir}/man8/*.8*
 
 %changelog
+* Thu Jan 26 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1000~1-1
+- use sysusers to create sfptpd user
+- add udev rules
+- add new dependencies
+
 * Tue Jan  3 2023 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1015-1
 - use versioning script to encode version
 
