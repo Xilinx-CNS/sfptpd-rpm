@@ -8,7 +8,6 @@ Summary: Solarflare Enhanced PTP Daemon
 License: BSD
 Group: System Environment/Daemons
 Source0: sfptpd-%{version}.tgz
-Source1: sfptpd.sysusers
 URL: https://www.xilinx.com/download/drivers
 Vendor: Advanced Micro Devices, Inc.
 BuildRequires: gcc
@@ -16,7 +15,7 @@ BuildRequires: make
 BuildRequires: systemd-rpm-macros
 BuildRequires: libmnl-devel
 BuildRequires: libcap-devel
-%{?sysusers_requires_compat}
+Requires(pre): shadow-utils
 
 %description
 This package provides the Xilinx 'sfptpd' daemon which implements PTP
@@ -44,14 +43,16 @@ export INST_PKGDOCDIR=%{buildroot}%{_pkgdocdir}
 export INST_OMIT="license"
 export INST_INITS="systemd"
 %make_install
-install -m 644 -p -D %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 install -m 644 -p -D scripts/udev/55-sfptpd.rules %{buildroot}%{_udevrulesdir}/55-sfptpd.rules
 
 %check
 make fast_test
 
 %pre
-%sysusers_create_compat %{SOURCE1}
+getent group sfptpd > /dev/null || groupadd -r sfptpd
+getent passwd sfptpd > /dev/null || \
+  useradd -r -g sfptpd -d %{_localstatedir}/lib/sfptpd -s /sbin/nologin \
+  -c 'sfptpd system user' sfptpd
 
 %post
 %systemd_post %{name}.service
@@ -68,7 +69,6 @@ make fast_test
 %attr(644, root, root) %{_unitdir}/sfptpd.service
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sfptpd.conf
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sysconfig/sfptpd
-%{_sysusersdir}/%{name}.conf
 %{_udevrulesdir}/55-sfptpd.rules
 %license LICENSE PTPD2_COPYRIGHT NTP_COPYRIGHT.html
 %doc %{_pkgdocdir}
@@ -76,7 +76,7 @@ make fast_test
 
 %changelog
 * Thu Jan 26 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1000~1-1
-- use sysusers to create sfptpd user
+- create sfptpd user
 - add udev rules
 - add new dependencies
 
