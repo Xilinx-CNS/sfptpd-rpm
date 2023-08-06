@@ -83,8 +83,7 @@ rm %{buildroot}%{_mandir}/man8/sfptpmon.8*
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Thu Aug 06 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
-- add sfptpmon tool
+* Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
 - add sed build dependency
 - expand licence to full SPDX expression
 - avoid deprecated wildcard usage
