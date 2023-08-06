@@ -92,7 +92,7 @@ make fast_test
 %ghost %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/ptp-nodes
 
 %changelog
-* Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
+* Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1005-1
 - add sfptpmon tool
 - add sed build dependency
 - expand licence to full SPDX expression
