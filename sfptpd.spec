@@ -80,7 +80,7 @@ make fast_test
 %ghost %{_localstatedir}/lib/%{name}/ptp-nodes
 
 %changelog
-* Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
+* Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1005-1
 - add sfptpmon tool
 - expand licence to full SPDX expression
 - avoid deprecated wildcard usage
