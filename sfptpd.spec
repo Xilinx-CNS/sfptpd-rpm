@@ -27,7 +27,7 @@ The application manages multiple time sources and bonded interfaces.
 %prep
 %autosetup
 scripts/sfptpd_versioning write %{version}
-sed -i 's,.*\(SFPTPD_USER=\).*",\1"-u sfptpd",g' scripts/sfptpd.env
+sed -i 's,.*\(SFPTPD_USER=\).*",#\1"-u sfptpd",g' scripts/sfptpd.env
 
 %build
 %make_build
