@@ -10,7 +10,6 @@ Group: System Environment/Daemons
 Source0: sfptpd-%{version}.tgz
 URL: https://www.xilinx.com/download/drivers
 Vendor: Advanced Micro Devices, Inc.
-BuildRequires: sed
 BuildRequires: gcc
 BuildRequires: make
 BuildRequires: systemd
@@ -81,9 +80,8 @@ make fast_test
 %ghost %{_localstatedir}/lib/%{name}/ptp-nodes
 
 %changelog
-* Thu Aug 06 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
+* Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
 - add sfptpmon tool
-- add sed build dependency
 - expand licence to full SPDX expression
 - avoid deprecated wildcard usage
 - own state directory in package
