@@ -1,24 +1,29 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# (c) Copyright 2014,2022 Advanced Micro Devices, Inc.
+# (c) Copyright 2014-2023 Advanced Micro Devices, Inc.
 
 Name: sfptpd
 Version: %{pkgversion}
 Release: 1%{?dist}
-Summary: Solarflare Enhanced PTP Daemon
-License: BSD
+Summary: System time sync daemon supporting PTP, NTP and 1PPS
+License: BSD-3-Clause AND BSD-2-Clause AND NTP AND ISC
 Group: System Environment/Daemons
 Source0: sfptpd-%{version}.tgz
 URL: https://www.xilinx.com/download/drivers
 Vendor: Advanced Micro Devices, Inc.
+BuildRequires: sed
 BuildRequires: gcc
 BuildRequires: make
 BuildRequires: systemd
+BuildRequires: libmnl-devel
+BuildRequires: libcap-devel
 
 %description
-This package provides the Xilinx 'sfptpd' daemon which implements PTP
-(IEEE 1588-2019) over UDP, synchronizes to PPS signals received by
-supported Ethernet controllers and performs local clock synchronization.
-The application manages multiple time sources and bonded interfaces.
+sfptpd provides a system-level solution to time synchronization between local
+(system and network interface) clocks and remote (PTP, PPS and NTP) time
+sources and sinks. The daemon implements the 2019 edition of the IEEE 1588
+Precision Time Protocol over UDP with the default or draft enterprise profile.
+Key features are high quality timestamp filtering, bond & VLAN support and
+instantaneous & long term monitoring.
 
 %prep
 %autosetup
@@ -39,6 +44,8 @@ export INST_PKGDOCDIR=%{buildroot}%{_pkgdocdir}
 export INST_OMIT="license"
 export INST_INITS="systemd"
 %make_install
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
+touch %{buildroot}%{_localstatedir}/lib/%{name}/{config,interfaces,sync-instances,topology,version,freq-correction-system,ptp-nodes}
 
 %check
 make fast_test
@@ -55,14 +62,36 @@ make fast_test
 %files
 %attr(755, root, root) %{_sbindir}/sfptpd
 %attr(755, root, root) %{_sbindir}/sfptpdctl
+%attr(755, root, root) %{_sbindir}/sfptpmon
 %attr(644, root, root) %{_unitdir}/sfptpd.service
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sfptpd.conf
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sysconfig/sfptpd
 %license LICENSE PTPD2_COPYRIGHT NTP_COPYRIGHT.html
 %doc %{_pkgdocdir}
-%{_mandir}/man8/*.8*
+%{_mandir}/man8/sfptpd.8*
+%{_mandir}/man8/sfptpdctl.8*
+%{_mandir}/man8/sfptpmon.8*
+%dir %{_localstatedir}/lib/%{name}
+%ghost %{_localstatedir}/lib/%{name}/config
+%ghost %{_localstatedir}/lib/%{name}/interfaces
+%ghost %{_localstatedir}/lib/%{name}/sync-instances
+%ghost %{_localstatedir}/lib/%{name}/topology
+%ghost %{_localstatedir}/lib/%{name}/version
+%ghost %config %{_localstatedir}/lib/%{name}/freq-correction-system
+%ghost %{_localstatedir}/lib/%{name}/ptp-nodes
 
 %changelog
+* Thu Aug 06 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
+- add sfptpmon tool
+- add sed build dependency
+- expand licence to full SPDX expression
+- avoid deprecated wildcard usage
+- own state directory in package
+- mark state files as ghost
+
+* Thu Jan 26 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1000~1-1
+- add new dependencies
+
 * Tue Jan  3 2023 Andrew Bower <andrew.bower@amd.com> - 3.6.0.1015-1
 - use versioning script to encode version
 
