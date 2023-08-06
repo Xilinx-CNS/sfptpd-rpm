@@ -2,7 +2,7 @@
 # (c) Copyright 2014-2023 Advanced Micro Devices, Inc.
 
 Name: sfptpd
-Version: %{pkgversion}
+Version: 3.7.0.1004
 Release: 1%{?dist}
 Summary: System time sync daemon supporting PTP, NTP and 1PPS
 License: BSD-3-Clause AND BSD-2-Clause AND NTP AND ISC
@@ -29,9 +29,8 @@ instantaneous & long term monitoring.
 
 %prep
 %autosetup
+find -iregex '.*\.py' | xargs sed -i -r -e '1s,^(#!).*python3,\1/usr/bin/python2,'
 scripts/sfptpd_versioning write %{version}
-
-find -iregex '.*\.py' | xargs sed -i -r '1s,^(#!.*)python3,\1python2,'
 
 %build
 make %{?_smp_mflags} sfptpd sfptpdctl
@@ -53,15 +52,17 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
 touch %{buildroot}%{_localstatedir}/lib/%{name}/{config,interfaces,sync-instances,topology,version,freq-correction-system,ptp-nodes}
 
+# sfptpmon requires python3, which is not available in EL6
+rm %{buildroot}%{_sbindir}/sfptpmon
+rm %{buildroot}%{_mandir}/man8/sfptpmon.8*
+
 %files
 %defattr(-, root, root, -)
 %attr(755, root, root) %{_sbindir}/sfptpd
 %attr(755, root, root) %{_sbindir}/sfptpdctl
-%attr(755, root, root) %{_sbindir}/sfptpmon
 %attr(755, root, root) %{_sysconfdir}/init.d/sfptpd
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sfptpd.conf
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sysconfig/sfptpd
-%doc %{pkgdocdir}
 %doc %{pkgdocdir}/LICENSE
 %doc %{pkgdocdir}/PTPD2_COPYRIGHT
 %doc %{pkgdocdir}/NTP_COPYRIGHT.html
@@ -69,7 +70,6 @@ touch %{buildroot}%{_localstatedir}/lib/%{name}/{config,interfaces,sync-instance
 %doc %{pkgdocdir}/config
 %{_mandir}/man8/sfptpd.8*
 %{_mandir}/man8/sfptpdctl.8*
-%{_mandir}/man8/sfptpmon.8*
 %dir %{_localstatedir}/lib/%{name}
 %ghost %{_localstatedir}/lib/%{name}/config
 %ghost %{_localstatedir}/lib/%{name}/interfaces
