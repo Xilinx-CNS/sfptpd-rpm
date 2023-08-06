@@ -10,13 +10,11 @@ Group: System Environment/Daemons
 Source0: sfptpd-%{version}.tgz
 URL: https://www.xilinx.com/download/drivers
 Vendor: Advanced Micro Devices, Inc.
-BuildRequires: sed
 BuildRequires: gcc
 BuildRequires: make
 BuildRequires: systemd-rpm-macros
 BuildRequires: libmnl-devel
 BuildRequires: libcap-devel
-Requires(pre): shadow-utils
 
 %description
 sfptpd provides a system-level solution to time synchronization between local
@@ -29,7 +27,6 @@ instantaneous & long term monitoring.
 %prep
 %autosetup
 scripts/sfptpd_versioning write %{version}
-sed -i 's,.*\(SFPTPD_USER=\).*",#\1"-u sfptpd",g' scripts/sfptpd.env
 
 %build
 %make_build
@@ -46,18 +43,11 @@ export INST_PKGDOCDIR=%{buildroot}%{_pkgdocdir}
 export INST_OMIT="license"
 export INST_INITS="systemd"
 %make_install
-install -m 644 -p -D scripts/udev/55-sfptpd.rules %{buildroot}%{_udevrulesdir}/55-sfptpd.rules
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
 touch %{buildroot}%{_localstatedir}/lib/%{name}/{config,interfaces,sync-instances,topology,version,freq-correction-system,ptp-nodes}
 
 %check
 make fast_test
-
-%pre
-getent group sfptpd > /dev/null || groupadd -r sfptpd
-getent passwd sfptpd > /dev/null || \
-  useradd -r -g sfptpd -d %{_localstatedir}/lib/sfptpd -s /sbin/nologin \
-  -c 'sfptpd system user' sfptpd
 
 %post
 %systemd_post %{name}.service
@@ -75,31 +65,28 @@ getent passwd sfptpd > /dev/null || \
 %attr(644, root, root) %{_unitdir}/sfptpd.service
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sfptpd.conf
 %attr(644, root, root) %config(noreplace) %{_sysconfdir}/sysconfig/sfptpd
-%{_udevrulesdir}/
-%{_udevrulesdir}/55-sfptpd.rules
 %license LICENSE PTPD2_COPYRIGHT NTP_COPYRIGHT.html
 %doc %{_pkgdocdir}
 %{_mandir}/man8/sfptpd.8*
 %{_mandir}/man8/sfptpdctl.8*
 %{_mandir}/man8/sfptpmon.8*
-%dir %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}
-%ghost %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/config
-%ghost %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/interfaces
-%ghost %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/sync-instances
-%ghost %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/topology
-%ghost %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/version
+%dir %{_localstatedir}/lib/%{name}
+%ghost %{_localstatedir}/lib/%{name}/config
+%ghost %{_localstatedir}/lib/%{name}/interfaces
+%ghost %{_localstatedir}/lib/%{name}/sync-instances
+%ghost %{_localstatedir}/lib/%{name}/topology
+%ghost %{_localstatedir}/lib/%{name}/version
 %ghost %config %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/freq-correction-system
-%ghost %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/ptp-nodes
+%ghost %{_localstatedir}/lib/%{name}/ptp-nodes
 
 %changelog
 * Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1004-1
 - add sfptpmon tool
-- add sed build dependency
 - expand licence to full SPDX expression
 - avoid deprecated wildcard usage
 - own state directory in package
 - mark state files as ghost
-- default to running as root
+- run as root and don't create resulting unused sfptpd user or udev rules
 
 * Thu Jan 26 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1000~1-1
 - create sfptpd user
