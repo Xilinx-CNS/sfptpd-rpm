@@ -45,16 +45,12 @@ export INST_CONFDIR=%{buildroot}%{_sysconfdir}
 export INST_UNITDIR=%{buildroot}%{_unitdir}
 export INST_PKGDOCDIR=%{buildroot}%{pkgdocdir}
 export INST_PKGLICENSEDIR=$INST_PKGDOCDIR
-export INST_OMIT=""
+export INST_OMIT="sfptpmon"
 export INST_INITS="sysv"
 rm -rf $RPM_BUILD_ROOT
 %make_install
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
 touch %{buildroot}%{_localstatedir}/lib/%{name}/{config,interfaces,sync-instances,topology,version,freq-correction-system,ptp-nodes}
-
-# sfptpmon requires python3, which is not available in EL6
-rm %{buildroot}%{_sbindir}/sfptpmon
-rm %{buildroot}%{_mandir}/man8/sfptpmon.8*
 
 %files
 %defattr(-, root, root, -)
