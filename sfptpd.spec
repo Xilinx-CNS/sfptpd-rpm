@@ -2,7 +2,7 @@
 # (c) Copyright 2014-2023 Advanced Micro Devices, Inc.
 
 Name: sfptpd
-Version: 3.7.0.1004
+Version: %{pkgversion}
 Release: 1%{?dist}
 Summary: System time sync daemon supporting PTP, NTP and 1PPS
 License: BSD-3-Clause AND BSD-2-Clause AND NTP AND ISC
