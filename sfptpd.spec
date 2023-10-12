@@ -76,7 +76,6 @@ make fast_test
 %ghost %{_localstatedir}/lib/%{name}/sync-instances
 %ghost %{_localstatedir}/lib/%{name}/topology
 %ghost %{_localstatedir}/lib/%{name}/version
-%ghost %config %{_localstatedir}/lib/%{name}/freq-correction-system
 %ghost %{_localstatedir}/lib/%{name}/ptp-nodes
 
 %changelog
@@ -85,7 +84,7 @@ make fast_test
 - ignore irrelevant PTP packets in sfptpmon script
 - fix teaming netlink handler
 - fix initial clock correction issues in rare cases
-- remove missed user setting in ghost files
+- avoid complication of package owning system frequency correction file
 
 * Tue Aug  8 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1006-1
 - add sfptpmon tool
