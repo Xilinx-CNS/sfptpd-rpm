@@ -44,7 +44,7 @@ export INST_OMIT="license"
 export INST_INITS="systemd"
 %make_install
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
-touch %{buildroot}%{_localstatedir}/lib/%{name}/{config,interfaces,sync-instances,topology,version,freq-correction-system,ptp-nodes}
+touch %{buildroot}%{_localstatedir}/lib/%{name}/{config,interfaces,sync-instances,topology,version,ptp-nodes}
 
 %check
 make fast_test
