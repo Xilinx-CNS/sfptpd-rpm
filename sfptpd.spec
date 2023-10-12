@@ -76,11 +76,18 @@ make fast_test
 %ghost %{_localstatedir}/lib/%{name}/sync-instances
 %ghost %{_localstatedir}/lib/%{name}/topology
 %ghost %{_localstatedir}/lib/%{name}/version
-%ghost %config %attr(-,sfptpd,sfptpd) %{_localstatedir}/lib/%{name}/freq-correction-system
+%ghost %config %{_localstatedir}/lib/%{name}/freq-correction-system
 %ghost %{_localstatedir}/lib/%{name}/ptp-nodes
 
 %changelog
-* Sun Aug  6 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1005-1
+* Thu Oct 12 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.1.1000-1
+- add '--console' and '-f -' options to command line
+- ignore irrelevant PTP packets in sfptpmon script
+- fix teaming netlink handler
+- fix initial clock correction issues in rare cases
+- remove missed user setting in ghost files
+
+* Tue Aug  8 2023 Andrew Bower <andrew.bower@amd.com> - 3.7.0.1006-1
 - add sfptpmon tool
 - expand licence to full SPDX expression
 - avoid deprecated wildcard usage
